@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pl.marekk.ocr.textclener.filter.Filters;
-import pl.marekk.ocr.textclener.filter.SlowTest;
 
 public class ImageMediumFilterTest {
   @BeforeAll
@@ -17,7 +16,7 @@ public class ImageMediumFilterTest {
   @SneakyThrows
   void happyPath() {
     // given
-    final String fileName = "sample_1.jpg";
+    final String fileName = "marek_kapowicki_id_front_1.jpg";
     final byte[] input = ImagesLoader.loadAsBytes(fileName);
     final Image image = ImageFactory.create(input, fileName);
     Image result = image.applyFilter(Filters.medium);
@@ -26,7 +25,7 @@ public class ImageMediumFilterTest {
     Assertions.assertThat(result).isNotNull();
   }
   @Test
-  @SlowTest
+//  @SlowTest
   void produceAndStoreFiles() {
     // expect
     FilterOutput.processSampleImages("medium", Filters.medium, "filters/medium");

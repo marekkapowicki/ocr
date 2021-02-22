@@ -1,5 +1,10 @@
 package pl.marekk.ocr.textclener.filter;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+
+import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -7,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-
-import java.util.function.Function;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,7 +32,13 @@ class Enlarger {
   }
 
   private static int calculateFactor(int width, int height) {
+    final int maxSize = Math.max(width, height);
     LOG.info("initial width {} height {}", width, height);
-    return 2;
+
+    return Match(maxSize).of(
+        Case($(size -> size < 500), 4),
+        Case($(size -> size < 1000), 2),
+        Case($(), 1)
+    );
   }
 }

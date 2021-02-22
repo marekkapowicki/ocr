@@ -25,6 +25,12 @@ public class Filters {
               .andThen(ImageConverter.matToBufferedImage)
               .andThen(ImageConverter.bufferedImageToBytes)
               .andThen(Thresholders.yen)
+              .andThen(ImageConverter.bytesToBufferedImage)
+              .andThen(ImageConverter.bufferedImageToMat)
+              .andThen(Restoration.bilateralOpenCV)
+              .andThen(Morphologies.close)
+              .andThen(ImageConverter.matToBufferedImage)
+              .andThen(ImageConverter.bufferedImageToBytes)
               .andThen(image::withContent)
               .apply(image.toBufferedImage());
   public static final Function<Image, Image> large_local =
@@ -34,15 +40,16 @@ public class Filters {
               .andThen(Enlarger.enrarger)
               .andThen(ImageConverter.matToBufferedImage)
               .andThen(ImageConverter.bufferedImageToBytes)
+              .andThen(Restoration.fillingHolesInBinaryImage)
               .andThen(Thresholders.localThreshold)
-                  .andThen(Restoration.fillingHolesInBinaryImage)
-//              .andThen(ImageConverter.bytesToBufferedImage)
-//              .andThen(ImageConverter.bufferedImageToMat)
+
+              .andThen(ImageConverter.bytesToBufferedImage)
+              .andThen(ImageConverter.bufferedImageToMat)
 //                  .andThen(Enhancer.detailEnhancer)
-//              .andThen(Morphologies.open)
-//              .andThen(Restoration.bilateralOpenCV)
-//              .andThen(ImageConverter.matToBufferedImage)
-//              .andThen(ImageConverter.bufferedImageToBytes)
+              .andThen(Morphologies.open)
+              .andThen(Restoration.bilateralOpenCV)
+              .andThen(ImageConverter.matToBufferedImage)
+              .andThen(ImageConverter.bufferedImageToBytes)
               .andThen(image::withContent)
               .apply(image.toBufferedImage());
 }

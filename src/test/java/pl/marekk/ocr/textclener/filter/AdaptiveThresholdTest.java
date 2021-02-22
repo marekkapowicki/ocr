@@ -4,9 +4,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opencv.core.Mat;
 import pl.marekk.ocr.textclener.ImagesLoader;
+import pl.marekk.ocr.textclener.OpencvInstalled;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@OpencvInstalled
 class AdaptiveThresholdTest {
   @BeforeAll
   static void setUp() {
