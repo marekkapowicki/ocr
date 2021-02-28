@@ -1,5 +1,10 @@
 package pl.marekk.ocr.textclener.filter;
 
+import static org.opencv.imgproc.Imgproc.COLOR_GRAY2RGB;
+import static org.opencv.imgproc.Imgproc.COLOR_RGB2GRAY;
+
+import java.io.File;
+import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -8,12 +13,6 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.photo.Photo;
 import pl.marekk.ocr.common.PythonExecutor;
-
-import java.io.File;
-import java.util.function.Function;
-
-import static org.opencv.imgproc.Imgproc.COLOR_GRAY2RGB;
-import static org.opencv.imgproc.Imgproc.COLOR_RGB2GRAY;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -50,7 +49,7 @@ class Enhancer {
 
     @Override
     public byte[] apply(@NonNull byte[] fileContent) {
-      LOG.info("filling the holes in image");
+      LOG.info("Enhance the edges in an image");
       return scriptExecutor.execute(fileContent);
     }
   }

@@ -1,17 +1,19 @@
 package pl.marekk.ocr.textclener.filter;
 
-import org.junit.jupiter.api.Test;
-import pl.marekk.ocr.textclener.ImagesLoader;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import pl.marekk.ocr.textclener.Images;
+import pl.marekk.ocr.textclener.ImagesLoader;
 
 public class FillingHolesTest {
   @Test
   void happyPath() {
     // given
-    byte[] content = ImagesLoader.loadAsBytes("sample_1.jpg");
+    byte[] content = ImagesLoader.loadAsBytes("marek_kapowicki_id_front_1.jpg");
     // when
     byte[] result = Restoration.fillingHolesInBinaryImage.apply(content);
+    Images.storeFile(ImageConverter.bytesToBufferedImage.apply(result), "777");
 
     // then
     assertThat(result).isNotEmpty();

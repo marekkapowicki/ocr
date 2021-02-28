@@ -7,15 +7,16 @@ from skimage.io import imsave
 from skimage.restoration import denoise_bilateral
 
 
-def yen_threshold(imagePath, outputPath):
+def bilateral(imagePath, outputPath):
     warnings.filterwarnings("ignore")
     imagePath = "" + imagePath
     color = io.imread(imagePath)
     img = rgb2gray(color)
     image = img_as_ubyte(img)
     cleaned = denoise_bilateral(image)
-    imsave('' + outputPath, cleaned)
-    cleaned
+    cleaned_uint8 = img_as_ubyte(cleaned)
+    imsave('' + outputPath, cleaned_uint8)
+    cleaned_uint8
 
 
 if __name__ == '__main__':
@@ -25,4 +26,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 # if not os.path.exists(args.input_path):
 #     raise IOError('input file does not exit')
-output = yen_threshold(args.input_path, args.output_path)
+output = bilateral(args.input_path, args.output_path)
