@@ -5,23 +5,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import pl.marekk.ocr.textclener.ImagesLoader;
 
-class LocalThresholderTest {
+public class ContrastEnhancerTest {
+
   @Test
   void happyPath() {
     // given
-    byte[] content = ImagesLoader.loadAsBytes("sample_1.jpg");
+    byte[] content = ImagesLoader.loadAsBytes("sample_16.jpg");
     // when
-    byte[] result = Thresholders.localThreshold.apply(content);
+    byte[] result = Enhancer.contrastEnhancer.apply(content);
 
     // then
     assertThat(result).isNotEmpty();
   }
 
   @Test
-  @SlowTest
+//  @ManualTest
   void produceAndStoreFiles() {
     // expect
     FilesGenerator.processSampleImagesUsingByteFunction(
-        "local", Thresholders.localThreshold, "threshold/local");
+        "holes", Enhancer.contrastEnhancer, "enhancer/contrast");
   }
 }

@@ -1,27 +1,27 @@
 package pl.marekk.ocr.textclener.filter;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import pl.marekk.ocr.textclener.ImagesLoader;
 
-class LocalThresholderTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class LocalSauvolaThresholderTest {
   @Test
   void happyPath() {
     // given
     byte[] content = ImagesLoader.loadAsBytes("sample_1.jpg");
     // when
-    byte[] result = Thresholders.localThreshold.apply(content);
+    byte[] result = Thresholders.LocalSauvolaThreshold.apply(content);
 
     // then
     assertThat(result).isNotEmpty();
   }
 
   @Test
-  @SlowTest
+//  @SlowTest
   void produceAndStoreFiles() {
     // expect
     FilesGenerator.processSampleImagesUsingByteFunction(
-        "local", Thresholders.localThreshold, "threshold/local");
+        "local_sauvola", Thresholders.LocalSauvolaThreshold, "threshold/local_sauvola");
   }
 }

@@ -16,7 +16,7 @@ import java.util.function.Function;
 class Restoration {
   static Function<Mat, Mat> bilateralOpenCV = Restoration::bilateralOpenCV;
   static Function<byte[], byte[]> bilateralSkImage = new BilateralScikit();
-  static Function<byte[], byte[]> fillingHolesInBinaryImage = new BinaryHolesFiller();
+  static Function<byte[], byte[]> binaryOpening = new BinaryHolesFiller();
 
   private static Mat bilateralOpenCV(@NonNull Mat src) {
     Mat dst = src.clone();
@@ -37,7 +37,7 @@ class Restoration {
   }
 
   private static class BinaryHolesFiller implements Function<byte[], byte[]> {
-    public static final String SCRIPT = "restoration" + File.separator + "filling_holes.py";
+    public static final String SCRIPT = "restoration" + File.separator + "binary_opening.py";
     private final PythonExecutor scriptExecutor = PythonExecutor.script(SCRIPT);
 
     @Override

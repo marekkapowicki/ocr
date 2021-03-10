@@ -3,7 +3,6 @@ package pl.marekk.ocr.textclener.filter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import pl.marekk.ocr.textclener.Images;
 import pl.marekk.ocr.textclener.ImagesLoader;
 
 public class FillingHolesTest {
@@ -12,8 +11,7 @@ public class FillingHolesTest {
     // given
     byte[] content = ImagesLoader.loadAsBytes("marek_kapowicki_id_front_1.jpg");
     // when
-    byte[] result = Restoration.fillingHolesInBinaryImage.apply(content);
-    Images.storeFile(ImageConverter.bytesToBufferedImage.apply(result), "777");
+    byte[] result = Restoration.binaryOpening.apply(content);
 
     // then
     assertThat(result).isNotEmpty();
@@ -24,6 +22,6 @@ public class FillingHolesTest {
   void produceAndStoreFiles() {
     // expect
     FilesGenerator.processSampleImagesUsingByteFunction(
-        "holes", Restoration.fillingHolesInBinaryImage, "denoiser/holes_filler");
+        "opening", Restoration.binaryOpening, "denoiser/opening");
   }
 }

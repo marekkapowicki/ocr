@@ -19,6 +19,7 @@ import pl.marekk.ocr.common.PythonExecutor;
 class Enhancer {
 
   static Function<byte[], byte[]> edgeSharper = new EdgeSharper();
+  static Function<byte[], byte[]> contrastEnhancer = new ContrastEnhancer();
   static Function<Mat, Mat> detailEnhancer =
       ColorConverters.grayToColor.andThen(Enhancer::enhance).andThen(ColorConverters.colorToGray);
 
@@ -50,6 +51,17 @@ class Enhancer {
     @Override
     public byte[] apply(@NonNull byte[] fileContent) {
       LOG.info("Enhance the edges in an image");
+      return scriptExecutor.execute(fileContent);
+    }
+  }
+
+  private static class ContrastEnhancer implements Function<byte[], byte[]> {
+    public static final String SCRIPT = "enhancer" + File.separator + "contrast_enhancer.py";
+    private final PythonExecutor scriptExecutor = PythonExecutor.script(SCRIPT);
+
+    @Override
+    public byte[] apply(@NonNull byte[] fileContent) {
+      LOG.info("Enhance the contrast");
       return scriptExecutor.execute(fileContent);
     }
   }

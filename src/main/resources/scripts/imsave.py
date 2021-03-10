@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
 from skimage.io import imsave, imread
+import argparse
 
 def saveImage(imagePath, outputPath):
   imagePath = "" + imagePath
   color = imread(imagePath)
   imsave('' + outputPath, color)
+  color
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='saving.')

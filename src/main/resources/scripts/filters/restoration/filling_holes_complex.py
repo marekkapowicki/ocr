@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import argparse
-import warnings
+import matplotlib.pyplot as plt
 from PIL import Image, ImageStat
 import numpy as np
 from skimage.color import gray2rgb, rgb2hsv, hsv2rgb
 from skimage.segmentation import flood
-from skimage.morphology import binary_opening, binary_closing, disk
+from skimage.morphology import binary_opening, binary_opening, disk
 from skimage import io, img_as_ubyte
 from skimage.io import imsave
 
@@ -28,17 +28,10 @@ def isGrayscale(imagePath):
 def reconstruction(imagePath, outputPath):
   image = io.imread(imagePath)
 
-  pim = Image.open(imagePath).convert("RGB")
-  stat = ImageStat.Stat(pim)
   if (isGrayscale(imagePath)):
     image = gray2rgb(image)
   elif (isNotHsv(imagePath) ):
     image = rgb2hsv(image)
-  pim = Image.open(imagePath)
-  stat = ImageStat.Stat(pim)
-  if len(stat.sum) != 4:
-    image = rgb2hsv(image)
-
   img_hsv = image
   img_hsv_copy = np.copy(img_hsv)
 
@@ -52,22 +45,23 @@ def reconstruction(imagePath, outputPath):
   img_hsv[mask, 0] = 0.5
   # Post-processing in order to improve the result
   # Remove white pixels from flag, using saturation channel
-  mask_postprocessed = np.logical_and(mask,
-                                      img_hsv_copy[..., 1] > 0.4)
+  mask_postprocessed = np.logical_and(mask, img_hsv_copy[..., 1] > 0.4)
   # Remove thin structures with binary opening
-  mask_postprocessed = binary_opening(mask_postprocessed,
-                                                 np.ones((3, 3)))
+  # mask_postprocessed = binary_opening(mask_postprocessed,
+  #                                                np.ones((3, 3)))
   # Fill small holes with binary closing
-  mask_postprocessed = binary_closing(mask_postprocessed, disk(20))
+  mask_postprocessed = binary_opening(mask_postprocessed, disk(20))
   img_hsv_copy[mask_postprocessed, 0] = 0.5
   # img_hsv_copy_uint8 = img_as_ubyte(img_hsv_copy)
   #is_hsv
   if(len(img_hsv_copy.shape) == 3 and img_hsv_copy.shape[2] == 3 ):
-    output = hsv2rgb(img_hsv_copy)
+     output = hsv2rgb(img_hsv_copy)
   else:
-    output = img_hsv_copy
+     output = img_hsv_copy
   output_uint8 = img_as_ubyte(output)
   imsave('' + outputPath, output_uint8)
+  # imsave('/home/marekk/workspace/tmp/1234.png', output_uint8)
+
   output_uint8
 
 

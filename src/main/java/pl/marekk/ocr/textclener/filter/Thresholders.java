@@ -22,6 +22,7 @@ class Thresholders {
   static Function<Mat, Mat> otsu = new Otsu();
   static Function<Mat, Mat> adaptiveThresholding = new Adaptive();
   static Function<byte[], byte[]> yen = new Yen();
+  static Function<byte[], byte[]> LocalSauvolaThreshold = new LocalSauvola();
   static Function<byte[], byte[]> localThreshold = new Local();
   static Function<BufferedImage, BufferedImage> simpleBinary = new SimpleBinary();
 
@@ -64,6 +65,17 @@ class Thresholders {
     @Override
     public byte[] apply(@NonNull byte[] fileContent) {
       LOG.info("applying the local thresholding");
+      return scriptExecutor.execute(fileContent);
+    }
+  }
+
+  private static class LocalSauvola implements Function<byte[], byte[]> {
+    public static final String SCRIPT = "threshold" + File.separator + "sauvola_local.py";
+    private final PythonExecutor scriptExecutor = PythonExecutor.script(SCRIPT);
+
+    @Override
+    public byte[] apply(@NonNull byte[] fileContent) {
+      LOG.info("applying the local Sauvola thresholding");
       return scriptExecutor.execute(fileContent);
     }
   }
