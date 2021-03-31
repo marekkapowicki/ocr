@@ -5,14 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import pl.marekk.ocr.textclener.ImagesLoader;
 
-public class ContrastEnhancerTest {
+class ContrastEnhancerTest {
 
   @Test
   void happyPath() {
     // given
-    byte[] content = ImagesLoader.loadAsBytes("sample_16.jpg");
+    byte[] content = ImagesLoader.loadAsBytes("sample_17.png");
     // when
     byte[] result = Enhancer.contrastEnhancer.apply(content);
+
 
     // then
     assertThat(result).isNotEmpty();
