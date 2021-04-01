@@ -16,6 +16,9 @@ import java.util.function.Function;
 class Restoration {
   static Function<Mat, Mat> bilateralOpenCV = Restoration::bilateralOpenCV;
   static Function<byte[], byte[]> bilateralSkImage = new BilateralScikit();
+  static Function<byte[], byte[]> smallObjectsCleaner = new SmallObjectsCleanerScikit();
+  static Function<byte[], byte[]> wienerUnblur = new SmallObjectsCleanerScikit();
+
   static Function<byte[], byte[]> binaryOpening = new BinaryHolesFiller();
 
   private static Mat bilateralOpenCV(@NonNull Mat src) {
@@ -32,6 +35,29 @@ class Restoration {
     @Override
     public byte[] apply(@NonNull byte[] fileContent) {
       LOG.info("applying the bilateralFilter Scikit");
+      return scriptExecutor.execute(fileContent);
+    }
+  }
+
+
+  private static class WienerScikit implements Function<byte[], byte[]> {
+    public static final String SCRIPT = "restoration" + File.separator + "wiener.py";
+    private final PythonExecutor scriptExecutor = PythonExecutor.script(SCRIPT);
+
+    @Override
+    public byte[] apply(@NonNull byte[] fileContent) {
+      LOG.info("applying the wiener unblurring");
+      return scriptExecutor.execute(fileContent);
+    }
+  }
+
+  private static class SmallObjectsCleanerScikit implements Function<byte[], byte[]> {
+    public static final String SCRIPT = "restoration" + File.separator + "objects_cleaning.py";
+    private final PythonExecutor scriptExecutor = PythonExecutor.script(SCRIPT);
+
+    @Override
+    public byte[] apply(@NonNull byte[] fileContent) {
+      LOG.info("applying the small objects and holes cleaner");
       return scriptExecutor.execute(fileContent);
     }
   }

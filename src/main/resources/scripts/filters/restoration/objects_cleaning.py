@@ -2,28 +2,26 @@
 import argparse
 import warnings
 from skimage import io, img_as_ubyte
-from skimage.color import rgb2gray
+from skimage.morphology import remove_small_objects, remove_small_holes
 from skimage.io import imsave
-from skimage.restoration import denoise_bilateral
 
-
-def bilateral(imagePath, outputPath):
+# the filter apply after threshold
+def cleaningObjects(imagePath, outputPath):
     warnings.filterwarnings("ignore")
     imagePath = "" + imagePath
-    color = io.imread(imagePath)
-    img = rgb2gray(color)
-    image = img_as_ubyte(img)
-    cleaned = denoise_bilateral(image, mode= 'edge')
-    cleaned_uint8 = img_as_ubyte(cleaned)
-    imsave('' + outputPath, cleaned_uint8)
-    cleaned_uint8
+    threshold = io.imread(imagePath)
+    image = img_as_ubyte(threshold)
+    cleaned = remove_small_holes(image, area_threshold=26)
+    cleaned = remove_small_objects(cleaned, min_size=8)
+    imsave('' + outputPath, cleaned)
+    cleaned
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='applies adaptative binarization and saves output.')
+    parser = argparse.ArgumentParser(description='apply filter')
     parser.add_argument('-i', '--input_path', dest="input_path", type=str, required=True, help="image path")
     parser.add_argument('-o', '--output_path', dest="output_path", type=str, required=True, help="output path")
     args = parser.parse_args()
 # if not os.path.exists(args.input_path):
 #     raise IOError('input file does not exit')
-output = bilateral(args.input_path, args.output_path)
+output = cleaningObjects(args.input_path, args.output_path)

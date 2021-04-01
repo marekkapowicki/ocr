@@ -1,22 +1,24 @@
 package pl.marekk.ocr.textclener.filter;
 
+import java.util.function.UnaryOperator;
 import pl.marekk.ocr.textclener.Image;
 
 import java.util.function.Function;
 
 public class Filters {
 
-  public static final Function<Image, Image> medium =
+  public static final UnaryOperator<Image> medium =
       image ->
           ImageConverter.bufferedImageToMat
               .andThen(Enlarger.enrarger)
               .andThen(ImageConverter.matToBufferedImage)
               .andThen(Deskew.deskew)
-              .andThen(Thresholders.simpleBinary)
               .andThen(ImageConverter.bufferedImageToBytes)
+              .andThen(Enhancer.contrastEnhancer)
+              .andThen(Thresholders.LocalSauvolaThreshold)
               .andThen(image::withContent)
               .apply(image.toBufferedImage());
-  public static final Function<Image, Image> large =
+  public static final UnaryOperator<Image> large =
       image ->
           Deskew.deskew
               .andThen(ImageConverter.bufferedImageToMat)
@@ -33,25 +35,19 @@ public class Filters {
               .andThen(ImageConverter.bufferedImageToBytes)
               .andThen(image::withContent)
               .apply(image.toBufferedImage());
-  public static final Function<Image, Image> large_local =
+  public static final UnaryOperator<Image> large_local =
       image ->
           Deskew.deskew
               .andThen(ImageConverter.bufferedImageToMat)
               .andThen(Enlarger.enrarger)
               .andThen(ImageConverter.matToBufferedImage)
               .andThen(ImageConverter.bufferedImageToBytes)
+              .andThen(Enhancer.contrastEnhancer)
               .andThen(Enhancer.edgeSharper)
               .andThen(Thresholders.LocalSauvolaThreshold)
               .andThen(Restoration.bilateralSkImage)
-              .andThen(Restoration.binaryOpening)
-
-//              .andThen(ImageConverter.bytesToBufferedImage)
-//              .andThen(ImageConverter.bufferedImageToMat)
-//                  .andThen(Enhancer.detailEnhancer)
-//              .andThen(Morphologies.open)
-//              .andThen(Restoration.bilateralOpenCV)
-//              .andThen(ImageConverter.matToBufferedImage)
-//              .andThen(ImageConverter.bufferedImageToBytes)
+              .andThen(Restoration.wienerUnblur)
+              .andThen(Restoration.smallObjectsCleaner)
               .andThen(image::withContent)
               .apply(image.toBufferedImage());
 }

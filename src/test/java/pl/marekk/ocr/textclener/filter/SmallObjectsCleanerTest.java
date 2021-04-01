@@ -1,17 +1,22 @@
 package pl.marekk.ocr.textclener.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import pl.marekk.ocr.textclener.ImagesLoader;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public class SmallObjectsCleanerTest {
 
-public class BilateralSkiImageTest {
+  public static final Function<byte[], byte[]> cleaning_function = Thresholders.localThreshold.andThen(
+      Restoration.smallObjectsCleaner);
+
   @Test
   void happyPath() {
     // given
     byte[] content = ImagesLoader.loadAsBytes("sample_1.jpg");
     // when
-    byte[] result = Restoration.bilateralSkImage.apply(content);
+    byte[] result = cleaning_function.apply(content);
 
     // then
     assertThat(result).isNotEmpty();
@@ -22,6 +27,6 @@ public class BilateralSkiImageTest {
   void produceAndStoreFiles() {
     // expect
     FilesGenerator.processSampleImagesUsingByteFunction(
-        "bilateral", Restoration.bilateralSkImage, "denoiser/bilateral/skimage");
+        "cleaning", cleaning_function, "morphology/objects_cleaning");
   }
 }

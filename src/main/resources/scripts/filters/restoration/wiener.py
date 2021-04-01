@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
 import argparse
 import warnings
-from skimage import io, img_as_ubyte
+import numpy as np
 from skimage.color import rgb2gray
+from skimage import io, img_as_ubyte
+from skimage import color, data, restoration
 from skimage.io import imsave
-from skimage.restoration import denoise_bilateral
+from scipy.signal import convolve2d as conv2
 
 
-def bilateral(imagePath, outputPath):
+def wiener(imagePath, outputPath):
     warnings.filterwarnings("ignore")
     imagePath = "" + imagePath
     color = io.imread(imagePath)
-    img = rgb2gray(color)
-    image = img_as_ubyte(img)
-    cleaned = denoise_bilateral(image, mode= 'edge')
+    image = rgb2gray(color)
+#     image = img_as_ubyte(img)
+    psf = np.ones((5, 5)) / 25
+    image = conv2(image, psf, 'same')
+    image += 0.1 * image.std() * np.random.standard_normal(image.shape)
+    cleaned, _ =  restoration.unsupervised_wiener(image, psf, clip=True)
     cleaned_uint8 = img_as_ubyte(cleaned)
     imsave('' + outputPath, cleaned_uint8)
     cleaned_uint8
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='applies adaptative binarization and saves output.')
@@ -26,4 +30,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 # if not os.path.exists(args.input_path):
 #     raise IOError('input file does not exit')
-output = bilateral(args.input_path, args.output_path)
+output = wiener(args.input_path, args.output_path)
